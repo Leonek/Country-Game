@@ -54,7 +54,16 @@ function ready(error, world, names) {
       i = -1,
       n = countries.length;
     
-    activeGlob();
+    trololo();
+    function checkingUser(){
+        var r = confirm("Gimme name of country: YES");
+            if (r == true) {
+                activeGlob();
+              
+            } else {
+                x = "You pressed Cancel!";
+            }
+    }
     
     function activeGlob(){
         countries = countries.filter(function(d) {
@@ -64,7 +73,6 @@ function ready(error, world, names) {
           }).sort(function(a, b) {
             return a.name.localeCompare(b.name);
           });
-       // function nextLoop(){
           (function transition() {
             d3.transition()
                 .duration(1250)
@@ -83,19 +91,13 @@ function ready(error, world, names) {
                     c.strokeStyle = "#000", c.lineWidth = 2, c.beginPath(), path(globe), c.stroke();
                   };
                 })
-              .transition()
-                .each("end", transition );
+                .each("end", trololo)
           })();
-       // }
-      
     }
+}
 
  
-}
-function getUserCountry(){
-    var reply ="";
-        
-}
+
     
     
     
