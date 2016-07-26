@@ -54,7 +54,7 @@ function ready(error, world, names) {
       i = -1,
       n = countries.length;
     
-    trololo();
+    checkingUser();
     function checkingUser(){
         var r = confirm("Gimme name of country: YES");
             if (r == true) {
@@ -63,6 +63,12 @@ function ready(error, world, names) {
             } else {
                 x = "You pressed Cancel!";
             }
+        
+        /*
+        var country = prompt("Please enter country name", "");
+            if (person != null) {
+               alert(country);
+            }*/
     }
     
     function activeGlob(){
@@ -91,7 +97,7 @@ function ready(error, world, names) {
                     c.strokeStyle = "#000", c.lineWidth = 2, c.beginPath(), path(globe), c.stroke();
                   };
                 })
-                .each("end", trololo)
+                .each("end", checkingUser)
           })();
     }
 }
