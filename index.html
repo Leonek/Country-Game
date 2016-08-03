@@ -10,16 +10,27 @@ h1 {
   text-align: center;
   width: 960px;
 }
-
+ #question{
+        position: fixed !imporant;
+        top:150px;
+        left:150px;
+     z-index: 4000;
+}
 </style>
 <h1></h1>
+<div id = "question">
+your answer: <input id="answer" type="text" name="FirstName" value=""><br>
+</div>
+<div id = "score">You'r score</div>
 <script src="d3.v3.min.js"></script>
 <script src="queue.v1.min.js"></script>
 <script src="topojson.v1.min.js"></script>
 <script>
-
+ "use strict";
 var width = 960,
-    height = 960;
+    height = 960,
+    score=0,
+    country;
 
 var projection = d3.geo.orthographic()
     .translate([width / 2, height / 2])
@@ -54,21 +65,29 @@ function ready(error, world, names) {
       i = -1,
       n = countries.length;
     
-    checkingUser();
-    function checkingUser(){
-        var r = confirm("Gimme name of country: YES");
-            if (r == true) {
-                activeGlob();
-              
-            } else {
-                x = "You pressed Cancel!";
-            }
+  activeGlob();
+    function divUser(){
+        question = document.createElement("div");
+        let cont = 
+            "<h2>Enter the country name to contiunue...</h2><h3> ...cancel to end </h3>";
+        question.innerHTML = cont;
+         // add the newly created element and it's content into the DOM
+          mydiv = document.getElementById("question");
+          document.body.insertBefore(question, mydiv);
         
-        /*
-        var country = prompt("Please enter country name", "");
-            if (person != null) {
-               alert(country);
-            }*/
+    }
+    function updateScore(){
+        let div = document.getElementById("score");
+        div.innerHTML = score;
+        
+    }
+    function checkingUser(c){
+       // divUser();
+
+     var courC = (countries[i = (i + 1) % n].name);
+        country=courC;
+        return(country);
+    
     }
     
     function activeGlob(){
@@ -81,10 +100,12 @@ function ready(error, world, names) {
           });
           (function transition() {
             d3.transition()
-                .duration(1250)
+                .duration(4250)
                 .each("start", function() {
-                  title.text(countries[i = (i + 1) % n].name);
-                })
+                     checkingUser();
+                  // title.text(countries[i = (i + 1) % n].name);
+               
+                }).duration(1500)
                 .tween("rotate", function() {
                   var p = d3.geo.centroid(countries[i]),
                       r = d3.interpolate(projection.rotate(), [-p[0], -p[1]]);
@@ -94,17 +115,32 @@ function ready(error, world, names) {
                     c.fillStyle = "#ccc", c.beginPath(), path(land), c.fill();
                     c.fillStyle = "#f00", c.beginPath(), path(countries[i]), c.fill();
                     c.strokeStyle = "#fff", c.lineWidth = .5, c.beginPath(), path(borders), c.stroke();
-                    c.strokeStyle = "#000", c.lineWidth = 2, c.beginPath(), path(globe), c.stroke();
+                    c.strokeStyle = "#000", c.lineWidth = 2, c.beginPath(), path(globe), c.stroke();   
                   };
                 })
-                .each("end", checkingUser)
+                .each("end", asd)
           })();
+            function asd (){
+                
+            let answer = document.getElementById("answer").value;
+           if(answer==country){
+               console.log("prawidlowo! to była: " +country);
+               score++;
+           }else{
+               console.log("zle");
+               console.log("To było: "+ country);
+           }
+           updateScore(); 
+                
+                activeGlob();
+         }
     }
+ 
 }
 
  
 
-    
+   
     
     
     
