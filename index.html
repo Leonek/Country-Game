@@ -16,12 +16,26 @@ h1 {
         left:150px;
      z-index: 4000;
 }
+#easy-menu{
+ //   display: none;
+}
 </style>
-<h1></h1>
-<div id = "question">
-your answer: <input id="answer" type="text" name="FirstName" value=""><br>
+
+<div id ="difficulty">
+    <h4>Choose the level of difficulty:</h4>
+    <button id="easy" onclick="alert('clicked!')">Easy</button>
+    <button id="hard" onclick="diff = hard" >Hard</button>
 </div>
-<div id = "score">You'r score</div>
+<h1></h1>
+<div id ="easy-menu">
+    <div id = "question">
+    Your answer: <input id="answer" type="text" name="FirstName" value=""><br>
+    </div>
+    <div id="currentQ"> Current question: 0 of 849</div>
+    <div id = "score">You'r score</div>
+    <div id = "country-name">Country name</div>
+</div>
+
 <script src="d3.v3.min.js"></script>
 <script src="queue.v1.min.js"></script>
 <script src="topojson.v1.min.js"></script>
@@ -30,7 +44,12 @@ your answer: <input id="answer" type="text" name="FirstName" value=""><br>
 var width = 960,
     height = 960,
     score=0,
-    country;
+    country,
+    currentQ= 0,
+    diff = null;
+    
+    
+    
 
 var projection = d3.geo.orthographic()
     .translate([width / 2, height / 2])
@@ -55,9 +74,19 @@ queue()
     .defer(d3.tsv, "world-country-names.tsv")
     .await(ready);
 
+       
 function ready(error, world, names) {
   if (error) throw error;
+      
+      function difficulty(){
+     let divEasy = document.getElementById("easy"),
+         divHard = document.getElementById("hard");
+            divEasy.click();
+            divHard.click();
+        
+  }
 
+    
   var globe = {type: "Sphere"},
       land = topojson.feature(world, world.objects.land),
       countries = topojson.feature(world, world.objects.countries).features,
@@ -65,35 +94,23 @@ function ready(error, world, names) {
       i = -1,
       n = countries.length;
     
-  activeGlob();
-    function divUser(){
-        question = document.createElement("div");
-        let cont = 
-            "<h2>Enter the country name to contiunue...</h2><h3> ...cancel to end </h3>";
-        question.innerHTML = cont;
-         // add the newly created element and it's content into the DOM
-          mydiv = document.getElementById("question");
-          document.body.insertBefore(question, mydiv);
-        
-    }
+
     function updateScore(){
         let div = document.getElementById("score");
         div.innerHTML = score;
-        
     }
-    function checkingUser(c){
-       // divUser();
-
+    
+    function updateCountry(){
      var courC = (countries[i = (i + 1) % n].name);
         country=courC;
         return(country);
-    
     }
-    
-    function activeGlob(){
+
+    function activeGlob(f){
+            
         countries = countries.filter(function(d) {
             return names.some(function(n) {
-              if (d.id == n.id) return d.name = n.name;
+              if (d.id == n.id)  return d.name = n.name;
             });
           }).sort(function(a, b) {
             return a.name.localeCompare(b.name);
@@ -102,10 +119,10 @@ function ready(error, world, names) {
             d3.transition()
                 .duration(4250)
                 .each("start", function() {
-                     checkingUser();
-                  // title.text(countries[i = (i + 1) % n].name);
-               
-                }).duration(1500)
+                  updateCountry();
+                 // title.text(countries[i = (i + 1) % n].name);
+                })
+                .duration(1500)
                 .tween("rotate", function() {
                   var p = d3.geo.centroid(countries[i]),
                       r = d3.interpolate(projection.rotate(), [-p[0], -p[1]]);
@@ -118,25 +135,37 @@ function ready(error, world, names) {
                     c.strokeStyle = "#000", c.lineWidth = 2, c.beginPath(), path(globe), c.stroke();   
                   };
                 })
-                .each("end", asd)
+                .each("end", f)
           })();
-            function asd (){
-                
-            let answer = document.getElementById("answer").value;
-           if(answer==country){
-               console.log("prawidlowo! to była: " +country);
-               score++;
-           }else{
-               console.log("zle");
-               console.log("To było: "+ country);
-           }
-           updateScore(); 
-                
-                activeGlob();
-         }
-    }
- 
+        
+        
 }
+            function easy(){
+                
+                console.log("easy!");
+                
+            }
+        
+            function hard(){
+               setTimeout(function(){
+                let answer = document.getElementById("answer").value,
+                    divC = document.getElementById("country-name"),
+                    divQ = document.getElementById("currentQ");
+                   if(answer==country){
+                       divC.innerHTML="Correct!!!  " + country;
+                       score++;
+                   }else{
+                     divC.innerHTML = "Incorrect!!!  " + country;
+                   }
+                   currentQ++;
+                   divQ.innerHTML = "Current question: " + currentQ + " of 849";
+                   updateScore(); 
+                   activeGlob();
+               },5000); 
+         }
+}
+ 
+
 
  
 
