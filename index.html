@@ -23,8 +23,8 @@ h1 {
 
 <div id ="difficulty">
     <h4>Choose the level of difficulty:</h4>
-    <button id="easy" onclick="alert('clicked!')">Easy</button>
-    <button id="hard" onclick="diff = hard" >Hard</button>
+    <button id="easy" onclick ="diff = easy" >Easy</button>
+    <button id="hard" onclick ="diff = hard" >Hard</button>
 </div>
 <h1></h1>
 <div id ="easy-menu">
@@ -72,20 +72,19 @@ var title = d3.select("h1");
 queue()
     .defer(d3.json, "world-110m.json")
     .defer(d3.tsv, "world-country-names.tsv")
-    .await(ready);
+    .await(checkingDif);
 
+function checkingDif(error,world,names){
+
+        ready(error,world,names);
+ 
+}
        
 function ready(error, world, names) {
   if (error) throw error;
       
-      function difficulty(){
-     let divEasy = document.getElementById("easy"),
-         divHard = document.getElementById("hard");
-            divEasy.click();
-            divHard.click();
-        
-  }
 
+ 
     
   var globe = {type: "Sphere"},
       land = topojson.feature(world, world.objects.land),
@@ -105,9 +104,11 @@ function ready(error, world, names) {
         country=courC;
         return(country);
     }
-
+    
+   (diff != null && diff != "easy" )? activeGlob(hard()): activeGlob(hard());
+    
     function activeGlob(f){
-            
+           // console.log(diff);
         countries = countries.filter(function(d) {
             return names.some(function(n) {
               if (d.id == n.id)  return d.name = n.name;
@@ -136,6 +137,7 @@ function ready(error, world, names) {
                   };
                 })
                 .each("end", f)
+  
           })();
         
         
@@ -160,7 +162,7 @@ function ready(error, world, names) {
                    currentQ++;
                    divQ.innerHTML = "Current question: " + currentQ + " of 849";
                    updateScore(); 
-                   activeGlob();
+                   activeGlob(hard());
                },5000); 
          }
 }
